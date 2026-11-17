@@ -1,0 +1,39 @@
+# Build
+build/
+cmake-build-*/
+out/
+
+# CMake in-source artifacts
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# Compiled objects & binaries
+*.o
+*.d
+*.a
+*.so
+
+# IDE & editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Downloaded rootfs (large, fetched by scripts/setup_rootfs.sh)
+rootfs/
+
+# AI tooling (local only)
+.agents/
+AGENTS.md
+CLAUDE.md
+GEMINI.md

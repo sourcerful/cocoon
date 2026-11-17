@@ -1,0 +1,9 @@
+Checks: >
+  -*,
+  bugprone-*,
+  modernize-*,
+  readability-*
+
+WarningsAsErrors: ''
+
+HeaderFilterRegex: 'include/micro_docker/.*'
