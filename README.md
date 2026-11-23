@@ -1,4 +1,4 @@
-mini-container
+cocoon
 
 A lightweight Linux container runtime built from scratch in C++17.
 

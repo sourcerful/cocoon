@@ -1,4 +1,4 @@
-# Architecture & Implementation Plan: Mini-Container Runtime in C++17 ("Micro-Docker")
+# Architecture & Implementation Plan: cocoon, a Mini Container Runtime in C++17
 
 ## 1. Project Overview & Technical Objectives
 
@@ -35,7 +35,7 @@ sequenceDiagram
     Note over Main: Register ScopeGuard: kill(child)+waitpid+cgroup cleanup
     Note over Child: Child blocks on sync pipe (waits for cgroup setup)
 
-    Main->>CG: Create container cgroup (/sys/fs/cgroup/micro_docker_<pid>)
+    Main->>CG: Create container cgroup (/sys/fs/cgroup/cocoon_<pid>)
     Main->>CG: Enable controllers (+memory +pids +cpu in parent subtree_control)
     Main->>CG: Apply memory.max, cpu.max, pids.max
     Main->>CG: Attach child PID to cgroup.procs
@@ -43,7 +43,7 @@ sequenceDiagram
 
     Sync-->>Child: Read token (cgroup limits active!)
     Child->>Child: Install signal handlers (SIGTERM, SIGINT, SIGCHLD)
-    Child->>Child: sethostname("micro-docker")
+    Child->>Child: sethostname("cocoon")
     Child->>Child: Setup Mount Namespace (MS_PRIVATE | MS_REC on "/")
     Child->>Child: Bind-mount rootfs onto itself (MS_BIND | MS_REC)
     Child->>Child: pivot_root(new_root, put_old) & chdir("/")
@@ -117,7 +117,7 @@ sequenceDiagram
 Modern Linux distributions use unified cgroups v2 (`/sys/fs/cgroup`):
 
 - **Controller Delegation**: Before the child cgroup's resource files exist, the **parent cgroup** must have the controllers enabled in its `cgroup.subtree_control`. Write `+memory +pids +cpu` to the parent's `subtree_control` file first. Without this step, `memory.max`, `cpu.max`, and `pids.max` will not appear in the child cgroup directory.
-- **Path**: Create `/sys/fs/cgroup/micro_docker_<pid>/`.
+- **Path**: Create `/sys/fs/cgroup/cocoon_<pid>/`.
 - **PIDs Limit**: Write max process count to `pids.max` (prevents fork bombs).
 - **Memory Limit**: Write byte count to `memory.max` (e.g., `104857600` for 100 MiB).
 - **CPU Limit**: Write quota and period to `cpu.max` (e.g., `50000 100000` for 50% of one core).
@@ -172,7 +172,7 @@ mini-container-runtime/
 │   ├── setup_rootfs.sh        # Downloads Alpine mini-rootfs for testing
 │   └── run_test_scenarios.sh  # Automated tests (fork bomb, memory limit, etc.)
 ├── include/
-│   └── micro_docker/
+│   └── cocoon/
 │       ├── cli.hpp            # CLI parser (flags, limits, arguments)
 │       ├── config.hpp         # ContainerConfig struct + environment variables
 │       ├── error.hpp          # Custom exceptions & system error helpers
@@ -214,22 +214,22 @@ mini-container-runtime/
 ## 5. CLI Interface Design
 
 ```
-Usage: sudo ./micro-docker run [OPTIONS] <rootfs_path> <command> [args...]
+Usage: sudo ./cocoon run [OPTIONS] <rootfs_path> <command> [args...]
 
 Options:
   --memory-max <bytes>     Memory limit (e.g., 100M, 512M, 1G)
   --cpu-max <quota,period> CPU limit (e.g., 50000,100000 for 50%)
   --pids-max <n>           Max number of processes (e.g., 20)
-  --hostname <name>        Container hostname (default: "micro-docker")
+  --hostname <name>        Container hostname (default: "cocoon")
   --env KEY=VALUE          Set environment variable (repeatable)
   --verbose                Print each syscall/operation as it executes
   --dry-run                Print the setup sequence without executing
   --help                   Show this help message
 
 Examples:
-  sudo ./micro-docker run ./alpine /bin/sh
-  sudo ./micro-docker run --memory-max 50M --pids-max 20 ./alpine /bin/sh
-  sudo ./micro-docker run --env PATH=/usr/bin --env HOME=/ --verbose ./alpine /bin/ls /
+  sudo ./cocoon run ./alpine /bin/sh
+  sudo ./cocoon run --memory-max 50M --pids-max 20 ./alpine /bin/sh
+  sudo ./cocoon run --env PATH=/usr/bin --env HOME=/ --verbose ./alpine /bin/ls /
 ```
 
 > [!TIP]

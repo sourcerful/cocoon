@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(micro-docker VERSION 0.1.0 LANGUAGES CXX)
+project(cocoon VERSION 0.1.0 LANGUAGES CXX)
 
 # Generate build/compile_commands.json for clangd and clang-tidy
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -15,9 +15,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cxxopts)
 
-add_executable(micro-docker src/main.cpp)
+add_executable(cocoon src/main.cpp)
 
-target_include_directories(micro-docker PRIVATE ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(micro-docker PRIVATE cxxopts::cxxopts)
+target_include_directories(cocoon PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(cocoon PRIVATE cxxopts::cxxopts)
 
-target_compile_options(micro-docker PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(cocoon PRIVATE -Wall -Wextra -Wpedantic)

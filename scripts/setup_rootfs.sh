@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # setup_rootfs.sh — Download and extract an Alpine Linux mini root filesystem
-# for use as the container rootfs in micro-docker.
+# for use as the container rootfs in cocoon.
 #
 
 set -euo pipefail

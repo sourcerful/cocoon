@@ -6,4 +6,4 @@ Checks: >
 
 WarningsAsErrors: ''
 
-HeaderFilterRegex: 'include/micro_docker/.*'
+HeaderFilterRegex: 'include/cocoon/.*'
