@@ -23,10 +23,10 @@ int main() {
       cocoon::UniqueFd ufile_descriptor(raw_fd);
       fd = ufile_descriptor.get();
 
-      std::cout << "fd " << ufile_descriptor.get() << ": " << isOpen(ufile_descriptor.get());
+      std::cout << "fd " << ufile_descriptor.get() << " open? : " << isOpen(ufile_descriptor.get());
     }
     std::cout << "\n";
-    std::cout << "fd " << fd << ": " << isOpen(fd) << "\n";
+    std::cout << "fd " << fd << " open? : " << isOpen(fd) << "\n";
 
   } catch (const std::system_error& e) {
     std::cerr << "Error (" << e.code().value() << "): " << e.what() << "\n";
